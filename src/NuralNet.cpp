@@ -4,9 +4,9 @@
 NeuralNet::NeuralNet(int input, int hidden, int output, int hiddenLayers)
     : iNodes_(input), hNodes_(hidden),
       oNodes_(output), hLayers_(hiddenLayers),
-      weights_(hLayers_, Eigen::MatrixXd::Random(hNodes_, iNodes_ + 1))
+      weights_(hLayers_, ::randomize(Eigen::MatrixXd(hNodes_, iNodes_ + 1)))
 {
-    weights_.push_back(Eigen::MatrixXd::Random(oNodes_, iNodes_ + 1));
+    weights_.push_back(::randomize(Eigen::MatrixXd(oNodes_, iNodes_ + 1)));
 }
 
 void NeuralNet::mutate(const float& mr)
@@ -28,22 +28,21 @@ NeuralNet NeuralNet::cross_over(const NeuralNet& other)
 
     return child;
 }
-#if 0
+
 std::vector<float> NeuralNet::output(std::vector<float> inputsArr)
 {
-     Matrix inputs = weights[0].singleColumnMatrixFromArray(inputsArr);
+    Eigen::MatrixXd inputs = ::from_array(inputsArr);
      
-     Matrix curr_bias = inputs.addBias();
+    Eigen::MatrixXd curr_bias = add_bias(inputs);
      
-     for(int i=0; i<hLayers; i++) {
-        Matrix hidden_ip = weights[i].dot(curr_bias); 
-        Matrix hidden_op = hidden_ip.activate();
-        curr_bias = hidden_op.addBias();
-     }
+    for(int i=0; i< hLayers_; i++) {
+        Eigen::MatrixXd hidden_ip = weights_[i] * curr_bias; 
+        Eigen::MatrixXd hidden_op = activate(hidden_ip);
+        curr_bias = add_bias(hidden_op);
+    }
      
-     Matrix output_ip = weights[weights.length-1].dot(curr_bias);
-     Matrix output = output_ip.activate();
+    Eigen::MatrixXd output_ip = weights_[weights_.size() - 1] * curr_bias;
+    Eigen::MatrixXd output = activate(output_ip);
      
-     return output.toArray();
-  }
-#endif
+     return to_array(output);
+}
