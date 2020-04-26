@@ -69,7 +69,7 @@ bool Engine::is_collide_food()
         for(auto food_entity : registry_.view<Position, Food>())
         {
             auto food_position = registry_.get<Position>(food_entity);
-            if(food_position.x == head_position.x && food_position.y == head_position.y)
+            if(head_position == food_position)
             {
                 return true;
             }
