@@ -30,6 +30,12 @@ set(ENTITYX_BUILD_TESTING OFF)
 add_subdirectory(external/EntityX)
 
 ###################################################################
+# Build entt submodule
+# URL: https://github.com/skypjack/entt.git
+set(USE_LIBCPP OFF)
+add_subdirectory(external/entt)
+
+###################################################################
 # Build Eigen submodule
 # URL: https://github.com/eigenteam/eigen-git-mirror.git
 set(BUILD_TESTING OFF)
@@ -37,7 +43,6 @@ add_subdirectory(external/Eigen)
 
 ###################################################################
 # Snakepp Executable
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++17 ")
 file(GLOB_RECURSE SNAKEPP_SRC src/*.cpp)
 add_library(snakepp ${SNAKEPP_SRC})
-target_link_libraries(snakepp PUBLIC sfml-window sfml-graphics entityx eigen)
+target_link_libraries(snakepp PUBLIC sfml-window sfml-graphics EnTT eigen)
