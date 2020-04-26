@@ -1,6 +1,6 @@
 #pragma once
 
-enum INPUT
+enum USERINPUT
 {
     UP,
     DOWN,
