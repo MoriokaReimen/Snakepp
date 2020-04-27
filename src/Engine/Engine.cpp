@@ -4,6 +4,8 @@
 #include <Components/Food.hpp>
 #include <Components/Position.hpp>
 
+#include <Event/GameOver.hpp>
+
 Engine::Engine(entt::registry &registry, entt::dispatcher& dispatcher)
     : registry_(registry),
       dispatcher_(dispatcher)
@@ -48,6 +50,11 @@ void Engine::step()
             } else {
                 Position tail_pos = head_position;
             }
+        }
+
+        if (is_out_of_field())
+        {
+            dispatcher_.trigger<GameOver>();
         }
     }
 }
