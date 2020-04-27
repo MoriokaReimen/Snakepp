@@ -45,5 +45,5 @@ add_subdirectory(external/Eigen)
 # Snakepp Executable
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++17 ")
 file(GLOB_RECURSE SNAKEPP_SRC src/*.cpp)
-add_library(snakepp ${SNAKEPP_SRC})
+add_executable(snakepp ${SNAKEPP_SRC})
 target_link_libraries(snakepp PUBLIC sfml-window sfml-graphics EnTT eigen)

@@ -9,7 +9,7 @@
 
 Graphic::Graphic(entt::registry &registry, entt::dispatcher &dispatcher)
     : registry_(registry), dispatcher_(dispatcher),
-      window_(sf::VideoMode(400, 400), "Snake"), is_gameover_(false)
+      window_(sf::VideoMode(800, 800), "Snake"), is_gameover_(false)
 {
     dispatcher_.sink<GameOver>().connect<&Graphic::on_gameover>(this);
 }
@@ -63,7 +63,7 @@ void Graphic::draw_schene()
     for (auto entity : head_view)
     {
         auto head_pos = registry_.get<Position>(entity);
-        sf::RectangleShape head;
+        sf::RectangleShape head(sf::Vector2f(20.0, 20.0));
         head.setPosition(head_pos.x * 2, head_pos.y * 2);
         head.setFillColor(sf::Color::Yellow);
         window_.draw(head);

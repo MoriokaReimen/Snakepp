@@ -4,8 +4,8 @@
 
 class Engine
 {
-    inline static const int FIELD_WIDTH = 200;
-    inline static const int FIELD_HEIGHT = 200;
+    inline static const int FIELD_WIDTH = 40;
+    inline static const int FIELD_HEIGHT = 40;
     entt::registry& registry_;
     entt::dispatcher& dispatcher_;
     bool is_out_of_field();
