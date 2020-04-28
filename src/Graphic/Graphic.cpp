@@ -1,4 +1,5 @@
 #include <Graphic/Graphic.hpp>
+
 #include <Event/UserInput.hpp>
 #include <Components/Head.hpp>
 #include <Components/Body.hpp>
@@ -6,6 +7,8 @@
 #include <Components/Position.hpp>
 
 #include <Event/Close.hpp>
+
+static int get_random(const int start, const int end);
 
 Graphic::Graphic(entt::registry &registry, entt::dispatcher &dispatcher)
     : registry_(registry), dispatcher_(dispatcher),
@@ -74,8 +77,8 @@ void Graphic::draw_schene()
     for (auto entity : body_view)
     {
         auto body_pos = registry_.get<Position>(entity);
-        sf::RectangleShape body;
-        body.setPosition(body_pos.x * 2, body_pos.y * 2);
+        sf::RectangleShape body(sf::Vector2f(20.0, 20.0));
+        body.setPosition(body_pos.x * 20, body_pos.y * 20);
         body.setFillColor(sf::Color::Green);
         window_.draw(body);
     }
@@ -85,8 +88,8 @@ void Graphic::draw_schene()
     for (auto entity : food_view)
     {
         auto food_pos = registry_.get<Position>(entity);
-        sf::RectangleShape food;
-        food.setPosition(food_pos.x * 2, food_pos.y * 2);
+        sf::RectangleShape food(sf::Vector2f(20.0, 20.0));
+        food.setPosition(food_pos.x * 20, food_pos.y * 20);
         food.setFillColor(sf::Color::Red);
         window_.draw(food);
     }

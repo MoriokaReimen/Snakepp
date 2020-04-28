@@ -1,10 +1,15 @@
 #include <Engine/Engine.hpp>
+
+#include <random>
+
 #include <Components/Head.hpp>
 #include <Components/Body.hpp>
 #include <Components/Food.hpp>
 #include <Components/Position.hpp>
 
 #include <Event/GameOver.hpp>
+
+static int get_random(const int start, const int end);
 
 Engine::Engine(entt::registry &registry, entt::dispatcher& dispatcher)
     : registry_(registry),
@@ -15,6 +20,11 @@ Engine::Engine(entt::registry &registry, entt::dispatcher& dispatcher)
     auto head_entity = registry_.create();
     registry_.assign<Position>(head_entity, 0, 0);
     registry_.assign<Head>(head_entity, Head());
+
+    auto food_entity = registry_.create();
+    registry_.assign<Position>(food_entity, get_random(0, FIELD_WIDTH), get_random(0, FIELD_HEIGHT));
+    registry_.assign<Food>(food_entity, Food());
+
     dispatcher_.sink<USERINPUT>().connect<&Engine::on_input>(this);
 }
 
@@ -113,4 +123,13 @@ bool Engine::is_collide_food()
 void Engine::on_input(USERINPUT input)
 {
     this->input_ = input;
+}
+
+static int get_random(const int start, const int end)
+{
+    static std::random_device rd;
+    static std::mt19937 eng(rd());
+    std::uniform_int_distribution<> dist(start, end);
+
+    return dist(eng);
 }
