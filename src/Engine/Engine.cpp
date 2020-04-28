@@ -74,9 +74,22 @@ void Engine::step()
             {
                 auto last_entity = head.bodies[head.bodies.size() - 1];
                 Position tail_pos = registry_.get<Position>(last_entity);
-
+                auto entity = registry_.create();
+                registry_.assign<Position>(entity, tail_pos);
+                registry_.assign<Body>(entity, Body());
             } else {
                 Position tail_pos = head_position;
+                auto entity = registry_.create();
+                registry_.assign<Position>(entity, tail_pos);
+                registry_.assign<Body>(entity, Body());
+            }
+            
+            auto food_view = registry_.view<Position, Food>();
+            for(auto food_entity : food_view)
+            {
+                auto& food_pos = registry_.get<Position>(food_entity);
+                food_pos.x = get_random(0, FIELD_WIDTH);
+                food_pos.y = get_random(0, FIELD_HEIGHT);
             }
         }
 
