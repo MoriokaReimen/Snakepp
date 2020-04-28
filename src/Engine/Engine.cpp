@@ -35,21 +35,12 @@ void Engine::step()
     {
         auto &head_position = registry_.get<Position>(head_entity);
 
-        const Head &head = registry_.get<Head>(head_entity);
+        Head &head = registry_.get<Head>(head_entity);
         if (!head.bodies.empty())
         {
             auto body_entity = head.bodies[0];
             auto &body_position = registry_.get<Position>(body_entity);
             body_position = head_position;
-        }
-
-        for (int i = 1; i < head.bodies.size(); i++)
-        {
-            auto body_entity = head.bodies[i];
-            auto last_body_entity = head.bodies[i - 1];
-            const auto &last_position = registry_.get<Position>(last_body_entity);
-            auto &position = registry_.get<Position>(body_entity);
-            position = last_position;
         }
 
         switch(input_)
@@ -68,6 +59,16 @@ void Engine::step()
                 break;
         }
 
+        for (int i = head.bodies.size() - 1; i > 0; i--)
+        {
+            auto body_entity = head.bodies[i];
+            auto last_body_entity = head.bodies[i - 1];
+            const auto &last_position = registry_.get<Position>(last_body_entity);
+            auto &position = registry_.get<Position>(body_entity);
+            position = last_position;
+        }
+
+
         if (is_collide_food())
         {
             if (!head.bodies.empty())
@@ -77,11 +78,13 @@ void Engine::step()
                 auto entity = registry_.create();
                 registry_.assign<Position>(entity, tail_pos);
                 registry_.assign<Body>(entity, Body());
+                head.bodies.push_back(entity);
             } else {
                 Position tail_pos = head_position;
                 auto entity = registry_.create();
                 registry_.assign<Position>(entity, tail_pos);
                 registry_.assign<Body>(entity, Body());
+                head.bodies.push_back(entity);
             }
             
             auto food_view = registry_.view<Position, Food>();
@@ -93,7 +96,7 @@ void Engine::step()
             }
         }
 
-        if (is_out_of_field())
+        if (is_out_of_field() || is_overwrap())
         {
             dispatcher_.trigger<GameOver>();
         }
@@ -124,6 +127,26 @@ bool Engine::is_collide_food()
         {
             auto food_position = registry_.get<Position>(food_entity);
             if (head_position == food_position)
+            {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+bool Engine::is_overwrap()
+{
+    auto head_view = registry_.view<Head>();
+    for (auto head_entity : head_view)
+    {
+        auto &head_position = registry_.get<Position>(head_entity);
+        auto &head = registry_.get<Head>(head_entity);
+        for(int i = 1; i < head.bodies.size(); i++)
+        {
+            auto body_position = registry_.get<Position>(head.bodies[i]);
+            if(body_position == head_position)
             {
                 return true;
             }

@@ -10,6 +10,7 @@ class Engine
     entt::dispatcher& dispatcher_;
     bool is_out_of_field();
     bool is_collide_food();
+    bool is_overwrap();
     USERINPUT input_;
     void on_input(USERINPUT input);
 public:

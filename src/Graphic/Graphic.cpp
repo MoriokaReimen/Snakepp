@@ -97,6 +97,7 @@ void Graphic::draw_schene()
 
 void Graphic::draw_gameover()
 {
+    window_.clear(sf::Color::Black);
 }
 
 void Graphic::on_gameover(const GameOver& gameover)
