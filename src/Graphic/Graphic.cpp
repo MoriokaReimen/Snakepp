@@ -64,7 +64,7 @@ void Graphic::draw_schene()
     {
         auto head_pos = registry_.get<Position>(entity);
         sf::RectangleShape head(sf::Vector2f(20.0, 20.0));
-        head.setPosition(head_pos.x * 2, head_pos.y * 2);
+        head.setPosition(head_pos.x * 20, head_pos.y * 20);
         head.setFillColor(sf::Color::Yellow);
         window_.draw(head);
     }

@@ -2,7 +2,8 @@
 #include <Graphic/Graphic.hpp>
 #include <cstdlib>
 #include <entt/entt.hpp>
-
+#include <thread>
+#include <chrono>
 #include <Event/Close.hpp>
 
 bool is_closed(false);
@@ -47,7 +48,10 @@ int main()
 
     while(!app.is_closed())
     {
+        auto start = std::chrono::system_clock::now();
+        auto end = start + std::chrono::seconds(1);
         app.step();
+        std::this_thread::sleep_until(end);
     }
 
     return EXIT_SUCCESS;

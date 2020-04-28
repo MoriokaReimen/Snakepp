@@ -8,7 +8,8 @@
 
 Engine::Engine(entt::registry &registry, entt::dispatcher& dispatcher)
     : registry_(registry),
-      dispatcher_(dispatcher)
+      dispatcher_(dispatcher),
+      input_(DOWN)
 {
     // add head to snake
     auto head_entity = registry_.create();
@@ -40,6 +41,23 @@ void Engine::step()
             auto &position = registry_.get<Position>(body_entity);
             position = last_position;
         }
+
+        switch(input_)
+        {
+            case UP:
+                head_position.y -= 1;
+                break;
+            case DOWN:
+                head_position.y += 1;
+                break;
+            case LEFT:
+                head_position.x -= 1;
+                break;
+            case RIGHT:
+                head_position.x += 1;
+                break;
+        }
+
         if (is_collide_food())
         {
             if (!head.bodies.empty())
@@ -67,10 +85,10 @@ bool Engine::is_out_of_field()
         auto &head_position = registry_.get<Position>(head_entity);
         if (0 <= head_position.x && head_position.x <= FIELD_WIDTH &&
             0 <= head_position.y && head_position.y <= FIELD_HEIGHT)
-            return true;
+            return false;
     }
 
-    return false;
+    return true;
 }
 
 bool Engine::is_collide_food()
