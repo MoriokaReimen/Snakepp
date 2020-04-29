@@ -24,6 +24,22 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++17 ")
 add_subdirectory(external/SFML)
 
 ###################################################################
+# Build libzip submodule
+# URL:
+add_subdirectory(external/libzippp)
+
+###################################################################
+# Build toml11 submodule
+# URL: 
+set(toml11_BUILD_TEST OFF)
+add_subdirectory(external/toml11)
+
+###################################################################
+# Build spdlog submodule
+# URL: 
+add_subdirectory(external/spdlog)
+
+###################################################################
 # Build EntityX submodule
 # URL: https://github.com/alecthomas/entityx.git
 set(ENTITYX_BUILD_TESTING OFF)
@@ -43,14 +59,16 @@ add_subdirectory(external/Eigen)
 
 ###################################################################
 # Graphic Library
-file(GLOB GRAPHIC_SRC src/Graphic/*.cpp)
-add_library(graphic ${GRAPHIC_SRC})
-target_link_libraries(graphic PUBLIC sfml-window sfml-graphics EnTT eigen)
+file(GLOB_RECURSE GRAPHIC_SRC src/Graphic/*.cpp)
+add_library(graphic STATIC ${GRAPHIC_SRC})
+target_include_directories(graphic PRIVATE "src/Graphic" src/Graphic/ResourceManager)
+target_link_libraries(graphic PUBLIC sfml-window sfml-graphics EnTT eigen spdlog::spdlog libzippp zip toml11::toml11)
 
 ###################################################################
 # Engine Library
 file(GLOB ENGINE_SRC src/Engine/*.cpp)
-add_library(engine ${ENGINE_SRC})
+add_library(engine STATIC ${ENGINE_SRC})
+target_include_directories(engine PRIVATE src/Engine)
 target_link_libraries(engine PUBLIC EnTT eigen)
 
 ###################################################################

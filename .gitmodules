@@ -10,3 +10,15 @@
 [submodule "external/entt"]
 	path = external/entt
 	url = https://github.com/skypjack/entt.git
+[submodule "external/libzip"]
+	path = external/libzip
+	url = https://github.com/nih-at/libzip.git
+[submodule "external/spdlog"]
+	path = external/spdlog
+	url = https://github.com/gabime/spdlog.git
+[submodule "external/libzippp"]
+	path = external/libzippp
+	url = https://github.com/ctabin/libzippp.git
+[submodule "external/toml11"]
+	path = external/toml11
+	url = https://github.com/ToruNiina/toml11.git
