@@ -13,6 +13,7 @@ class Engine
     bool is_overwrap();
     USERINPUT input_;
     void on_input(USERINPUT input);
+    void update_position(const entt::entity &head_entity);
 public:
     Engine(entt::registry& registry, entt::dispatcher& dispatcher);
     void step();

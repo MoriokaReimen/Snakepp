@@ -11,7 +11,7 @@
 
 static int get_random(const int start, const int end);
 
-Engine::Engine(entt::registry &registry, entt::dispatcher& dispatcher)
+Engine::Engine(entt::registry &registry, entt::dispatcher &dispatcher)
     : registry_(registry),
       dispatcher_(dispatcher),
       input_(DOWN)
@@ -33,42 +33,9 @@ void Engine::step()
     auto view = registry_.view<Head>();
     for (auto head_entity : view)
     {
-        auto &head_position = registry_.get<Position>(head_entity);
-
+        update_position(head_entity);
         Head &head = registry_.get<Head>(head_entity);
-        if (!head.bodies.empty())
-        {
-            auto body_entity = head.bodies[0];
-            auto &body_position = registry_.get<Position>(body_entity);
-            body_position = head_position;
-        }
-
-        switch(input_)
-        {
-            case UP:
-                head_position.y -= 1;
-                break;
-            case DOWN:
-                head_position.y += 1;
-                break;
-            case LEFT:
-                head_position.x -= 1;
-                break;
-            case RIGHT:
-                head_position.x += 1;
-                break;
-        }
-
-        for (int i = head.bodies.size() - 1; i > 0; i--)
-        {
-            auto body_entity = head.bodies[i];
-            auto last_body_entity = head.bodies[i - 1];
-            const auto &last_position = registry_.get<Position>(last_body_entity);
-            auto &position = registry_.get<Position>(body_entity);
-            position = last_position;
-        }
-
-
+        auto &head_position = registry_.get<Position>(head_entity);
         if (is_collide_food())
         {
             if (!head.bodies.empty())
@@ -79,18 +46,20 @@ void Engine::step()
                 registry_.assign<Position>(entity, tail_pos);
                 registry_.assign<Body>(entity, Body());
                 head.bodies.push_back(entity);
-            } else {
+            }
+            else
+            {
                 Position tail_pos = head_position;
                 auto entity = registry_.create();
                 registry_.assign<Position>(entity, tail_pos);
                 registry_.assign<Body>(entity, Body());
                 head.bodies.push_back(entity);
             }
-            
+
             auto food_view = registry_.view<Position, Food>();
-            for(auto food_entity : food_view)
+            for (auto food_entity : food_view)
             {
-                auto& food_pos = registry_.get<Position>(food_entity);
+                auto &food_pos = registry_.get<Position>(food_entity);
                 food_pos.x = get_random(0, FIELD_WIDTH);
                 food_pos.y = get_random(0, FIELD_HEIGHT);
             }
@@ -100,6 +69,46 @@ void Engine::step()
         {
             dispatcher_.trigger<GameOver>();
         }
+    }
+}
+
+void Engine::update_position(const entt::entity &head_entity)
+{
+    auto &head_position = registry_.get<Position>(head_entity);
+
+    Head &head = registry_.get<Head>(head_entity);
+
+    /* update body postions */
+    for (int i = head.bodies.size() - 1; i > 0; i--)
+    {
+        auto body_entity = head.bodies[i];
+        auto last_body_entity = head.bodies[i - 1];
+        const auto &last_position = registry_.get<Position>(last_body_entity);
+        auto &position = registry_.get<Position>(body_entity);
+        position = last_position;
+    }
+    if (!head.bodies.empty())
+    {
+        auto body_entity = head.bodies[0];
+        auto &body_position = registry_.get<Position>(body_entity);
+        body_position = head_position;
+    }
+
+    /* update head position */
+    switch (input_)
+    {
+    case UP:
+        head_position.y -= 1;
+        break;
+    case DOWN:
+        head_position.y += 1;
+        break;
+    case LEFT:
+        head_position.x -= 1;
+        break;
+    case RIGHT:
+        head_position.x += 1;
+        break;
     }
 }
 
@@ -143,10 +152,10 @@ bool Engine::is_overwrap()
     {
         auto &head_position = registry_.get<Position>(head_entity);
         auto &head = registry_.get<Head>(head_entity);
-        for(int i = 1; i < head.bodies.size(); i++)
+        for (int i = 1; i < head.bodies.size(); i++)
         {
             auto body_position = registry_.get<Position>(head.bodies[i]);
-            if(body_position == head_position)
+            if (body_position == head_position)
             {
                 return true;
             }
