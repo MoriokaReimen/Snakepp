@@ -97,6 +97,9 @@ void Graphic::draw_schene()
 void Graphic::draw_gameover()
 {
     window_.clear(sf::Color::Black);
+    sf::Text message("Game Over", resource_.getFont("resource/osaka-re.ttf"), 50);
+    message.setPosition(250, 300);
+    window_.draw(message);
 }
 
 void Graphic::on_gameover(const GameOver& gameover)
