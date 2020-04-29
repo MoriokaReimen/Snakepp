@@ -42,8 +42,19 @@ set(BUILD_TESTING OFF)
 add_subdirectory(external/Eigen)
 
 ###################################################################
+# Graphic Library
+file(GLOB GRAPHIC_SRC src/Graphic/*.cpp)
+add_library(graphic ${GRAPHIC_SRC})
+target_link_libraries(graphic PUBLIC sfml-window sfml-graphics EnTT eigen)
+
+###################################################################
+# Engine Library
+file(GLOB ENGINE_SRC src/Engine/*.cpp)
+add_library(engine ${ENGINE_SRC})
+target_link_libraries(engine PUBLIC EnTT eigen)
+
+###################################################################
 # Snakepp Executable
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++17 ")
-file(GLOB_RECURSE SNAKEPP_SRC src/*.cpp)
+file(GLOB SNAKEPP_SRC src/*.cpp)
 add_executable(snakepp ${SNAKEPP_SRC})
-target_link_libraries(snakepp PUBLIC sfml-window sfml-graphics EnTT eigen)
+target_link_libraries(snakepp PUBLIC engine graphic)
