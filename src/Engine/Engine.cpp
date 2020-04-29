@@ -34,35 +34,10 @@ void Engine::step()
     for (auto head_entity : view)
     {
         update_position(head_entity);
-        Head &head = registry_.get<Head>(head_entity);
-        auto &head_position = registry_.get<Position>(head_entity);
+
         if (is_collide_food())
         {
-            if (!head.bodies.empty())
-            {
-                auto last_entity = head.bodies[head.bodies.size() - 1];
-                Position tail_pos = registry_.get<Position>(last_entity);
-                auto entity = registry_.create();
-                registry_.assign<Position>(entity, tail_pos);
-                registry_.assign<Body>(entity, Body());
-                head.bodies.push_back(entity);
-            }
-            else
-            {
-                Position tail_pos = head_position;
-                auto entity = registry_.create();
-                registry_.assign<Position>(entity, tail_pos);
-                registry_.assign<Body>(entity, Body());
-                head.bodies.push_back(entity);
-            }
-
-            auto food_view = registry_.view<Position, Food>();
-            for (auto food_entity : food_view)
-            {
-                auto &food_pos = registry_.get<Position>(food_entity);
-                food_pos.x = get_random(0, FIELD_WIDTH);
-                food_pos.y = get_random(0, FIELD_HEIGHT);
-            }
+            consume_food(head_entity);
         }
 
         if (is_out_of_field() || is_overwrap())
@@ -109,6 +84,38 @@ void Engine::update_position(const entt::entity &head_entity)
     case RIGHT:
         head_position.x += 1;
         break;
+    }
+}
+
+void Engine::consume_food(const entt::entity &head_entity)
+{
+    auto &head_position = registry_.get<Position>(head_entity);
+    Head &head = registry_.get<Head>(head_entity);
+    if (!head.bodies.empty())
+    {
+        auto last_entity = head.bodies[head.bodies.size() - 1];
+        Position tail_pos = registry_.get<Position>(last_entity);
+        auto entity = registry_.create();
+        registry_.assign<Position>(entity, tail_pos);
+        registry_.assign<Body>(entity, Body());
+        head.bodies.push_back(entity);
+    }
+    else
+    {
+        Position tail_pos = head_position;
+        auto entity = registry_.create();
+        registry_.assign<Position>(entity, tail_pos);
+        registry_.assign<Body>(entity, Body());
+        head.bodies.push_back(entity);
+    }
+
+    /* move food */
+    auto food_view = registry_.view<Position, Food>();
+    for (auto food_entity : food_view)
+    {
+        auto &food_pos = registry_.get<Position>(food_entity);
+        food_pos.x = get_random(0, FIELD_WIDTH - 1);
+        food_pos.y = get_random(0, FIELD_HEIGHT - 1);
     }
 }
 
