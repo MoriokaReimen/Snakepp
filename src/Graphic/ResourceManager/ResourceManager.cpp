@@ -108,70 +108,92 @@ void ResMng::loadZip(const std::string &resource_path)
         }
     }
     {
-        const auto textures = toml::find<std::vector<toml::table>>(data, "textures");
-        for (const auto &texture : textures)
+        try
         {
-            auto path = texture.at("path").as_string();
-            libzippp::ZipEntry entry = zf.getEntry(path);
-            if (entry.isFile())
+            const auto textures = toml::find<std::vector<toml::table>>(data, "textures");
+            for (const auto &texture : textures)
             {
-                auto addr = entry.readAsBinary();
-                auto size = entry.getSize();
-                this->loadTexture(path, addr, size);
+                auto path = texture.at("path").as_string();
+                libzippp::ZipEntry entry = zf.getEntry(path);
+                if (entry.isFile())
+                {
+                    auto addr = entry.readAsBinary();
+                    auto size = entry.getSize();
+                    this->loadTexture(path, addr, size);
+                }
+                else
+                {
+                    spdlog::warn("Texture not found: {}", path);
+                }
             }
-            else
-            {
-                spdlog::warn("Texture not found: {}", path);
-            }
+        }
+        catch (const std::out_of_range &er)
+        {
+            spdlog::info("No textures found in {}", resource_path);
         }
     }
 
     {
-        const auto animations = toml::find<std::vector<toml::table>>(data, "animations");
-        for (const auto &animation : animations)
+        try
         {
-            std::vector<sf::IntRect> frames;
-            auto geoms = animation.at("frames").as_array();
-            for (auto &geom : geoms)
+            const auto animations = toml::find<std::vector<toml::table>>(data, "animations");
+            for (const auto &animation : animations)
             {
-                frames.push_back(sf::IntRect(geom[0].as_integer(), geom[1].as_integer(),
-                                             geom[2].as_integer(), geom[3].as_integer()));
-            }
+                std::vector<sf::IntRect> frames;
+                auto geoms = animation.at("frames").as_array();
+                for (auto &geom : geoms)
+                {
+                    frames.push_back(sf::IntRect(geom[0].as_integer(), geom[1].as_integer(),
+                                                 geom[2].as_integer(), geom[3].as_integer()));
+                }
 
-            auto path = animation.at("path").as_string();
-            libzippp::ZipEntry entry = zf.getEntry(path);
-            if (entry.isFile())
-            {
-                auto addr = entry.readAsBinary();
-                auto size = entry.getSize();
-                this->loadAnimation(path, addr, size, frames);
+                auto path = animation.at("path").as_string();
+                libzippp::ZipEntry entry = zf.getEntry(path);
+                if (entry.isFile())
+                {
+                    auto addr = entry.readAsBinary();
+                    auto size = entry.getSize();
+                    this->loadAnimation(path, addr, size, frames);
+                }
+                else
+                {
+                    spdlog::warn("Animation not found: {}", path);
+                }
             }
-            else
-            {
-                spdlog::warn("Animation not found: {}", path);
-            }
+        }
+        catch (const std::out_of_range &er)
+        {
+            spdlog::info("No animations found in {}", resource_path);
         }
     }
 
     {
-        const auto texts = toml::find<std::vector<toml::table>>(data, "texts");
-        for (const auto &text : texts)
+        try
         {
-            auto path = text.at("path").as_string();
-            libzippp::ZipEntry entry = zf.getEntry(path);
-            if (entry.isFile())
+            const auto texts = toml::find<std::vector<toml::table>>(data, "texts");
+            for (const auto &text : texts)
             {
-                auto addr = entry.readAsBinary();
-                auto size = entry.getSize();
-                this->loadText(path, addr, size);
+                auto path = text.at("path").as_string();
+                libzippp::ZipEntry entry = zf.getEntry(path);
+                if (entry.isFile())
+                {
+                    auto addr = entry.readAsBinary();
+                    auto size = entry.getSize();
+                    this->loadText(path, addr, size);
+                }
+                else
+                {
+                    spdlog::warn("Tex not found: {}", path);
+                }
             }
-            else
-            {
-                spdlog::warn("Tex not found: {}", path);
-            }
+        }
+        catch (const std::out_of_range &err)
+        {
+            spdlog::info("No texts found in {}", resource_path);
         }
     }
 }
+
 bool ResMng::loadFont(const std::string &font_path)
 {
     bool ret(false);

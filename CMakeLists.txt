@@ -61,7 +61,7 @@ add_subdirectory(external/Eigen)
 # Graphic Library
 file(GLOB_RECURSE GRAPHIC_SRC src/Graphic/*.cpp)
 add_library(graphic STATIC ${GRAPHIC_SRC})
-target_include_directories(graphic PRIVATE "src/Graphic" src/Graphic/ResourceManager)
+target_include_directories(graphic PUBLIC "src/Graphic" src/Graphic/ResourceManager)
 target_link_libraries(graphic PUBLIC sfml-window sfml-graphics EnTT eigen spdlog::spdlog libzippp zip toml11::toml11)
 
 ###################################################################

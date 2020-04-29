@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <Event/GameOver.hpp>
+#include <ResourceManager/ResourceManger.hpp>
 
 class Graphic
 {
@@ -13,6 +14,7 @@ class Graphic
     void draw_schene();
     void draw_gameover();
     void on_gameover(const GameOver& gameover);
+    ResMng::ResMng resource_;
 
 public:
     Graphic(entt::registry& registry, entt::dispatcher& dispatcher);

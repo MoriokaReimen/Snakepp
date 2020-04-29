@@ -8,12 +8,11 @@
 
 #include <Event/Close.hpp>
 
-static int get_random(const int start, const int end);
-
 Graphic::Graphic(entt::registry &registry, entt::dispatcher &dispatcher)
     : registry_(registry), dispatcher_(dispatcher),
       window_(sf::VideoMode(800, 800), "Snake"), is_gameover_(false)
 {
+    resource_.loadZip("resource/resource.zip");
     dispatcher_.sink<GameOver>().connect<&Graphic::on_gameover>(this);
 }
 
