@@ -12,13 +12,13 @@ void GridShape::update()
 {
     vertices_.clear();
     vertices_.setPrimitiveType(sf::Lines);
-    for (int i = 0; i < dimension_.x; i++)
+    for (int i = 0; i <= dimension_.x; i++)
     {
         vertices_.append(sf::Vertex(Vector2f(i * cell_size_.x, 0), color_));
         vertices_.append(sf::Vertex(Vector2f(i * cell_size_.x, cell_size_.y * dimension_.y), color_));
     }
 
-    for (int j = 0; j < dimension_.y; j++)
+    for (int j = 0; j <= dimension_.y; j++)
     {
         vertices_.append(sf::Vertex(Vector2f(0, j * cell_size_.y), color_));
         vertices_.append(sf::Vertex(Vector2f(cell_size_.x * dimension_.x, j * cell_size_.y), color_));

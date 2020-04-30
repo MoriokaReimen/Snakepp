@@ -15,6 +15,7 @@ class Graphic
     void draw_gameover();
     void on_gameover(const GameOver& gameover);
     ResMng::ResMng resource_;
+    void draw_info();
 
 public:
     Graphic(entt::registry& registry, entt::dispatcher& dispatcher);

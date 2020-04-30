@@ -8,9 +8,11 @@
 #include <GridShape.hpp>
 #include <Event/Close.hpp>
 
+#include <sstream>
+
 Graphic::Graphic(entt::registry &registry, entt::dispatcher &dispatcher)
     : registry_(registry), dispatcher_(dispatcher),
-      window_(sf::VideoMode(800, 800), "Snake"), is_gameover_(false)
+      window_(sf::VideoMode(1500, 800), "Snake"), is_gameover_(false)
 {
     resource_.loadZip("resource/resource.zip");
     dispatcher_.sink<GameOver>().connect<&Graphic::on_gameover>(this);
@@ -62,8 +64,10 @@ void Graphic::draw_schene()
 {
     sf::GridShape grid(sf::Vector2f(20.0, 20.0), sf::Vector2i(40, 40));
     window_.draw(grid);
-    auto head_view = registry_.view<Head, Position>();
 
+    draw_info();
+
+    auto head_view = registry_.view<Head, Position>();
     for (auto entity : head_view)
     {
         auto head_pos = registry_.get<Position>(entity);
@@ -96,11 +100,33 @@ void Graphic::draw_schene()
     }
 }
 
+void Graphic::draw_info()
+{
+    auto head_view = registry_.view<Head, Position>();
+    for (auto entity : head_view)
+    {
+        auto head_pos = registry_.get<Position>(entity);
+        auto head = registry_.get<Head>(entity);
+        std::stringstream message;
+        message << "X: ";
+        message << head_pos.x << "\n";
+        message << "Y: ";
+        message << head_pos.y << "\n";
+        message << "Lehgth: ";
+        message << head.bodies.size() << "\n";
+        sf::Text text(message.str(), resource_.getFont("resource/agencyfb-bold.ttf"), 50);
+        text.setFillColor(sf::Color::Black);
+        text.setPosition(1000, 30);
+        window_.draw(text);
+    }
+
+}
+
 void Graphic::draw_gameover()
 {
     window_.clear(sf::Color::Black);
     sf::Text message("Game Over", resource_.getFont("resource/osaka-re.ttf"), 50);
-    message.setPosition(250, 300);
+    message.setPosition(600, 300);
     window_.draw(message);
 }
 
