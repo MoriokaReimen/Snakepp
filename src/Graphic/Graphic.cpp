@@ -5,7 +5,7 @@
 #include <Components/Body.hpp>
 #include <Components/Food.hpp>
 #include <Components/Position.hpp>
-
+#include <GridShape.hpp>
 #include <Event/Close.hpp>
 
 Graphic::Graphic(entt::registry &registry, entt::dispatcher &dispatcher)
@@ -60,6 +60,8 @@ void Graphic::step()
 
 void Graphic::draw_schene()
 {
+    sf::GridShape grid(sf::Vector2f(20.0, 20.0), sf::Vector2i(40, 40));
+    window_.draw(grid);
     auto head_view = registry_.view<Head, Position>();
 
     for (auto entity : head_view)
