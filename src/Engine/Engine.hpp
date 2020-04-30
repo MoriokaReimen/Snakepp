@@ -1,6 +1,7 @@
 #pragma once
 #include <entt/entt.hpp>
 #include <Event/UserInput.hpp>
+#include <chrono>
 
 class Engine
 {
@@ -15,6 +16,7 @@ class Engine
     void on_input(USERINPUT input);
     void update_position(const entt::entity &head_entity);
     void consume_food(const entt::entity &head_entity);
+    std::chrono::system_clock::time_point last_update_;
 
 public:
     Engine(entt::registry &registry, entt::dispatcher &dispatcher);

@@ -14,7 +14,7 @@ static int get_random(const int start, const int end);
 Engine::Engine(entt::registry &registry, entt::dispatcher &dispatcher)
     : registry_(registry),
       dispatcher_(dispatcher),
-      input_(DOWN)
+      input_(DOWN), last_update_(std::chrono::system_clock::now())
 {
     // add head to snake
     auto head_entity = registry_.create();
@@ -30,6 +30,11 @@ Engine::Engine(entt::registry &registry, entt::dispatcher &dispatcher)
 
 void Engine::step()
 {
+    auto now = std::chrono::system_clock::now();
+    auto time_diff = std::chrono::duration_cast<std::chrono::milliseconds>(now - last_update_);
+    if(time_diff.count() < 100)
+        return;
+
     auto view = registry_.view<Head>();
     for (auto head_entity : view)
     {
@@ -45,6 +50,7 @@ void Engine::step()
             dispatcher_.trigger<GameOver>();
         }
     }
+    last_update_ = now;
 }
 
 void Engine::update_position(const entt::entity &head_entity)
@@ -125,8 +131,8 @@ bool Engine::is_out_of_field()
     for (auto head_entity : head_view)
     {
         auto &head_position = registry_.get<Position>(head_entity);
-        if (0 <= head_position.x && head_position.x <= FIELD_WIDTH &&
-            0 <= head_position.y && head_position.y <= FIELD_HEIGHT)
+        if (0 <= head_position.x && head_position.x < FIELD_WIDTH &&
+            0 <= head_position.y && head_position.y < FIELD_HEIGHT)
             return false;
     }
 
