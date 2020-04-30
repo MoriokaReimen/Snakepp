@@ -342,21 +342,41 @@ bool ResMng::loadText(const std::string &text_path, const void *addr, const std:
 
 sf::Texture &ResMng::getTexture(const std::string &path)
 {
+    if (textures_.find(path) == textures_.end())
+    {
+        spdlog::error("texture: {} is not registered in resource manager", path);
+    }
+
     return textures_[path];
 }
 
 sf::Font &ResMng::getFont(const std::string &path)
 {
+    if (fonts_.find(path) == fonts_.end())
+    {
+        spdlog::error("fonts: {} is not registered in resource manager", path);
+    }
+
     return fonts_[path];
 }
 
 Animation &ResMng::getAnimation(const std::string &path)
 {
+    if (animations_.find(path) == animations_.end())
+    {
+        spdlog::error("animation: {} is not registered in resource manager", path);
+    }
+
     return animations_[path];
 }
 
 std::string &ResMng::getText(const std::string &path)
 {
+    if (texts_.find(path) == texts_.end())
+    {
+        spdlog::error("text: {} is not registered in resource manager", path);
+    }
+
     return texts_[path];
 }
 
